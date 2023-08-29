@@ -1,56 +1,8 @@
+{% extends 'base.html' %}
 {% load static %}
 {% load humanize %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Page</title>
-    <!--Bootstrap4-->
-    <link rel="stylesheet" href="{% static './css/bootstrap.css' %}" />
-    <!--fontawesome-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!--animate4-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-
-
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-     <div class="container">
-        <a class="navbar-brand" href="/">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-        <form class="ml-auto">
-                <div class="input-group">
-            <input type="text"  name="q" class="form-control" placeholder="Search">
-            <div class="input-group-append">
-              <button class="btn btn-success " type="submit" id="button-addon2">Search</button>
-            </div>
-          </div>
-        </form>
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Question</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Tags</a>
-            </li>
-            <a class="nav-link" href="#">Ask</a>
-            </li>
-            <a class="nav-link" href="#">Profile</a>
-            </li>
-          </ul>
-        </div>
-       </div>
-      </nav>
-    
+{% block title %}{{quest.title}}{% endblock %}
+{% block content %}
       <!--Question List-->
 
       <div class="container">
@@ -59,7 +11,7 @@
         <p>
           tags:
           {% for tag in tags %}
-          <a href="#" class="badge badge-secondary p-1">{{tag}}</a>
+          <a href="/tag/{{tag|slugify}}" class="badge badge-secondary p-1">{{tag}}</a>
           {% endfor %}
       </p>
         <p>
@@ -181,53 +133,60 @@
                   }
               });
           });
-          // Upvote
+          // JavaScript
 
-          $(".upvote-click").on('click',function(){
-              var answerid=$(this).data('answer');
-              // ajax
-              $.ajax({
-                url:"/save-upvote",
-                type:"post",
-                data:{
-                  answerid:answerid,
-                  csrfmiddlewaretoken: "{{csrf_token}}"
-                },
-                dataType:'json',
-                success:function(res){
-                  var _prevupvote=$(".upvote-count-"+answerid).text();
-                  if(res.bool==true){
-                    $(".upvote-count-"+answerid).text(parseInt(_prevupvote)+1);
-                  }
-                }
-              });
-          });
+var votedAnswers = []; // To keep track of voted answers
 
-        // Downvote
-        
-        $(".downvote-click").on('click',function(){
-          var answerid=$(this).data('answer');
-          
-          $.ajax({
-            url:"/save-downvote",
-            type:"post",
-            data:{
-              answerid:answerid,
-              csrfmiddlewaretoken: "{{csrf_token}}"
-            },
-            dataType:'json',
-            success:function(res){
-              var _prevupvote=$(".downvote-count-"+answerid).text();
-              if(res.bool==true){
-                $(".downvote-count-"+answerid).text(parseInt(_prevupvote)+1);
-              }
+$(".upvote-click").on('click', function(){
+    var answerid = $(this).data('answer');
+    
+    // Check if the user has already voted on this answer
+    if (votedAnswers.includes(answerid)) {
+        undoVote('up', answerid);
+        return;
+    }
+    
+    // ... (rest of your code for upvoting)
+});
+
+$(".downvote-click").on('click', function(){
+    var answerid = $(this).data('answer');
+    
+    // Check if the user has already voted on this answer
+    if (votedAnswers.includes(answerid)) {
+        undoVote('down', answerid);
+        return;
+    }
+    
+    // ... (rest of your code for downvoting)
+});
+
+function undoVote(type, answerid) {
+    // AJAX to undo the vote
+    var url = type === 'up' ? "/undo-upvote" : "/undo-downvote";
+    
+    $.ajax({
+        url: url,
+        type: "post",
+        data: {
+            answerid: answerid,
+            csrfmiddlewaretoken: "{{csrf_token}}"
+        },
+        dataType: 'json',
+        success: function(res) {
+            if (res.bool == true) {
+                var voteCount = type === 'up' ? ".upvote-count-" : ".downvote-count-";
+                var _prevVote = $(voteCount + answerid).text();
+                $(voteCount + answerid).text(parseInt(_prevVote) - 1);
+                // Remove answerid from votedAnswers array
+                votedAnswers = votedAnswers.filter(id => id !== answerid);
             }
-          });
-      });
+        }
+    });
+}
 
       });
     </script>
      
     <script src="{% static './js/bootstrap.bundle.js' %}"></script>
-</body>
-</html>
+  {% endblock %}

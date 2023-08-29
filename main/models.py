@@ -1,5 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,AbstractUser
+
+
+    
 # Question Model
 
 class Question(models.Model):
