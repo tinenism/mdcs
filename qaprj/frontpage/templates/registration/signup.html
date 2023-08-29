@@ -1,0 +1,88 @@
+{% extends 'frontpage/base.html' %} 
+
+{%load crispy_forms_tags%}
+{% block content %}
+
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card mt-5">
+        <div
+          class="card-header bg-white border-0"
+          style="font-family: 'Poppins', sans-serif; font-weight: 500"
+        >
+          <h4 class="mb-0">
+            Register
+            <a
+              href="{%url 'frontpage'%} "
+              class="text-info text-decoration-none"
+              style="font-family: 'Poppins', sans-serif; font-weight: 500"
+              >DivSpace</a
+            >
+          </h4>
+        </div>
+        <div
+          class="card-body bg-white"
+          style="
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            font-size: 12px;
+          "
+        >
+          <form method="post" class="form">
+            {% csrf_token %} {{ form|crispy }}
+            <div class="d-grid gap-2">
+              <button
+                type="submit"
+                class="btn btn-outline-dark text-info mt-3"
+                style="font-family: 'Poppins', sans-serif"
+              >
+                Login
+              </button>
+            </div>
+            <p
+              class="text-center mt-3"
+              style="
+                font-family: 'Poppins', sans-serif;
+                font-weight: 300;
+                font-size: 12px;
+              "
+            >
+              Already have an account?
+              <a
+                class="text-info text-decoration-none"
+                href="{%url 'login'%}"
+                >Sign up</a
+              >
+            </p>
+            <p class="text-center">Or</p>
+
+            <p
+              class="text-center mt-3"
+              style="
+                font-family: 'Poppins', sans-serif;
+                font-weight: 300;
+                font-size: 12px;
+              "
+            >
+              <a
+                href="#"
+                class="btn btn-outline-dark text-info mt-2"
+                style="
+                  font-family: 'Poppins', sans-serif;
+                  font-weight: 500;
+                  font-size: 12px;
+                "
+              >
+                <i class="fab fa-google me-2"></i> Continue with Google
+              </a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

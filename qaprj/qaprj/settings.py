@@ -41,7 +41,12 @@ INSTALLED_APPS = [
     #own
     'main',
     'django.contrib.humanize',
-    'fontawesomefree'
+    'fontawesomefree',
+    'frontpage',
+
+    # crispyforms
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -81,11 +86,11 @@ WSGI_APPLICATION = 'qaprj.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'divinian',
-        'USER': 'postgres',
-        'PASSWORD': 'nulgathm00',
+        'NAME': 'thesis2_db',
+        'USER': 'thesis_admin2',
+        'PASSWORD': 'tatadmin26',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
 
     }
 }
@@ -126,7 +131,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-LOGIN_REDIRECT_URL='/'
+LOGIN_REDIRECT_URL='home'
 LOGOUT_REDIRECT_URL='login'
 
 
@@ -137,3 +142,8 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# crispy templates
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
