@@ -146,7 +146,24 @@ $(".upvote-click").on('click', function(){
         return;
     }
     
-    // ... (rest of your code for upvoting)
+    // AJAX for upvoting
+    $.ajax({
+      url: "/save-upvote",
+      type: "post",
+      data: {
+          answerid: answerid,
+          csrfmiddlewaretoken: "{{csrf_token}}"
+      },
+      dataType: 'json',
+      success: function(res) {
+          if (res.bool == true) {
+              votedAnswers.push(answerid); // Mark answer as voted
+              var _prevUpvote = $(".upvote-count-"+answerid).text();
+              $(".upvote-count-"+answerid).text(parseInt(_prevUpvote) + 1);
+          }
+      }
+  });
+
 });
 
 $(".downvote-click").on('click', function(){
@@ -158,7 +175,24 @@ $(".downvote-click").on('click', function(){
         return;
     }
     
-    // ... (rest of your code for downvoting)
+        // AJAX for downvoting
+        $.ajax({
+          url: "/save-downvote",
+          type: "post",
+          data: {
+              answerid: answerid,
+              csrfmiddlewaretoken: "{{csrf_token}}"
+          },
+          dataType: 'json',
+          success: function(res) {
+              if (res.bool == true) {
+                  votedAnswers.push(answerid); // Mark answer as voted
+                  var _prevDownvote = $(".downvote-count-"+answerid).text();
+                  $(".downvote-count-"+answerid).text(parseInt(_prevDownvote) + 1);
+              }
+          }
+      });
+
 });
 
 function undoVote(type, answerid) {
