@@ -1,0 +1,48 @@
+{% extends 'main/base.html' %} {% block content %}
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-md-3 col-sm-6">
+      <a href="{%url 'home'%}" class="btn btn-light">Back to Feed</a>
+    </div>
+  </div>
+
+  <div class="row justify-content-center mt-5">
+    <div class="card shadow-sm col-md-8 col-sm-12 border-bottom px-5 pt-3">
+      <!-- <img
+        src="{{ profile.picture.url }}"
+        class="rounded-circle"
+        width="100"
+        height="100"
+      /> -->
+      <!-- TOM EDIT -->
+      {% if profile.name %}
+      <h3 class="py-4">
+        {{ profile.name }} {% else %}
+        <h3 class="py-4">{{ user.username }}</h3>
+        {% endif %}
+      </h3>
+
+      {% if profile.birth_date %}
+      <p>{{ profile.birth_date }}</p>
+      {% endif %} {% if profile.bio %}
+      <p>{{ profile.bio }}</p>
+      {% endif %}
+
+      <!-- <div class="mb-3">
+        <p>Followers: {{ number_of_followers }}</p>
+        {% if user == request.user %} {% else %} {% if is_following %}
+        <form method="POST" action="{% url 'remove-follower' profile.pk %}">
+          {% csrf_token %}
+          <button class="btn btn-outline-danger" type="submit">Unfollow</button>
+        </form>
+        {% else %}
+        <form method="POST" action="{% url 'add-follower' profile.pk %}">
+          {% csrf_token %}
+          <button class="btn btn-outline-success" type="submit">Follow</button>
+        </form>
+        {% endif %} {% endif %}
+      </div> FOR FOLLOWING -->
+    </div>
+  </div>
+</div>
+{% endblock content %}
