@@ -1,11 +1,12 @@
 from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
-from .models import Question, Answer, Comment, UpVote, DownVote
+from .models import Question, Answer, Comment, UpVote, DownVote, UserProfile
 from django.core.paginator import Paginator
 from django.contrib import messages
 from .forms import AnswerForm, QuestionForm
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Count
+from django.views import View
 # Home Page
 
 def home(request):
@@ -17,7 +18,7 @@ def home(request):
     paginator=Paginator(quests,3)
     page_num=request.GET.get('page',1)
     quests=paginator.page(page_num)
-    return render(request,'home.html',{'quests':quests})
+    return render(request,'main/home.html',{'quests':quests})
 
 #Details
 
@@ -34,7 +35,7 @@ def detail(request,id):
             answer.user=request.user
             answer.save()
             messages.success(request,'Answer has been submitted')
-    return render(request, 'detail.html', {
+    return render(request, 'main/detail.html', {
         'quest': quest, 
         'tags':tags, 
         'answers':answers, 
@@ -88,16 +89,6 @@ def save_downvote(request):
         )
     return JsonResponse({'bool':True})
 
-# User Register
-def register(request):
-    form=UserCreationForm
-    if request.method=='POST':
-        regForm=UserCreationForm(request.POST)
-        if regForm.is_valid():
-            regForm.save()
-            messages.success(request,'User has been registered.')
-    return render(request,'registration/register.html',{'form':form})
-
 # Question Form 
 def ask_form(request):
     form=QuestionForm
@@ -108,7 +99,7 @@ def ask_form(request):
             questForm.user=request.user
             questForm.save()
             messages.success(request,'Question has been added.')
-    return render(request,'ask-question.html',{'form':form})
+    return render(request,'main/ask-question.html',{'form':form})
 
 # Questions according to tag
 def tag(request,tag):
@@ -117,4 +108,21 @@ def tag(request,tag):
     page_num=request.GET.get('page',1)
     quests=paginator.page(page_num)
     return render(request,'tag.html',{'quests':quests,'tag':tag})
+
+
+class ProfileView(View):
+    def get(self, request, pk, *args, **kwargs):
+        profile = UserProfile.objects.get(pk=pk)
+        user = profile.user
+       
+        # posts = Post.objects.filter(author=user).order_by('-created_on') tom configurations
+
+        context = {
+            'user': user,
+            'profile': profile,
+            # 'posts': posts
+        }
+
+        return render(request, 'main/profile.html', context)
+
 

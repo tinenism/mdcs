@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from .forms import AccountRegistrationForm
 from django.contrib import messages
 from django.views import View
+from main.models import UserProfile
 
 # Create your views here.
 
@@ -15,7 +16,9 @@ class AccountRegisterView(View):
     def post(self, request):
         form = AccountRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.save()
+            UserProfile.objects.get_or_create(user=user)
             messages.success(request, 'User has been registered.')
             return redirect('login')  # Redirect to the login page or another appropriate page
 
